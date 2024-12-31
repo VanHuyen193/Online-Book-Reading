@@ -4,15 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Chapter extends Model
+class Favorite extends Model
 {
     protected $fillable = [
-        'story_id', 'chapter_number', 'title', 'content'
+        'user_id', 'story_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function story()
     {
         return $this->belongsTo(Story::class);
     }
 }
-

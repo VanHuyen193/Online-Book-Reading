@@ -16,4 +16,3 @@ class Story extends Model
         return $this->hasMany(Chapter::class);
     }
 }
-

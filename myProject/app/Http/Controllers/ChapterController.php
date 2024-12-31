@@ -13,10 +13,11 @@ class ChapterController extends Controller
         return view('chapters.show', compact('chapter'));
     }
 
-    public function create()
+    public function create($story_id)
     {
-        return view('chapters.create');
+        return view('chapters.create', compact('story_id'));
     }
+
 
     public function store(Request $request)
     {

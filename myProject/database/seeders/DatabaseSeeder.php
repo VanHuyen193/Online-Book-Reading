@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Story;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Book;
 
 
 class DatabaseSeeder extends Seeder
@@ -22,7 +23,6 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
-
         User::factory()->create([
             'name' => 'Test User 2',
             'email' => 'test2@example.com',
