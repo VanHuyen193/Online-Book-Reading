@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\story;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Book;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,9 +21,14 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
-        Book::create([
-            'BookID' => 'b11',
-            'Title' => 'test1',
+        story::create([
+            'Name' => 'Test book',
+            'BookCode' => 'abcd',
+        ]);
+
+        story::create([
+            'Name' => 'Test book2',
+            'BookCode' => 'abcd2',
         ]);
     }
 }
