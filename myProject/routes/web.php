@@ -5,26 +5,26 @@ use App\Http\Controllers\BookController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StoryController;
 use App\Http\Controllers\ChapterController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\StoryAdminController;
+use App\Http\Controllers\Admin\ChapterAdminController;
 
-// Route::get('/', function () {
-//     return view('welcome');
+// Đảm bảo user đã đăng nhập và phân quyền admin
+// Route::middleware(['admin'])->prefix('admin')->group(function () {
+//     Route::resource('stories', StoryAdminController::class);
+//     Route::resource('chapters', ChapterAdminController::class)->except(['index', 'show']);
 // });
 
-Route::get('/story/{story_id}/chapter/create', [ChapterController::class, 'create'])->name('chapters.create');
+// Routes cho các truyện và chương truyện
+Route::get('/', [StoryController::class, 'index'])->name('stories.index');
+Route::get('/story/{id}', [StoryController::class, 'show'])->name('stories.show');
+Route::get('/story/{storyId}/chapter/{chapterId}', [ChapterController::class, 'show'])->name('chapters.show');
+
+// Routes admin (chỉ cho admin truy cập)
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+    Route::resource('stories', StoryAdminController::class)->except(['show']);
+    Route::resource('chapters', ChapterAdminController::class)->except(['index', 'show']);
+});
 
 
-Route::get('/user{id}', [UserController::class, 'getUser']);
-
-Route::get('/', [StoryController::class, 'index'])->name('home');
-Route::get('/story/{id}', [StoryController::class, 'show'])->name('story.show');
-
-Route::get('/chapter/{id}', [ChapterController::class, 'show'])->name('chapter.show');
-// Route::get('/chapter/create', [ChapterController::class, 'create'])->name('chapters.create');
-Route::post('/chapter', [ChapterController::class, 'store'])->name('chapters.store');
-Route::get('/chapter/{id}/edit', [ChapterController::class, 'edit'])->name('chapters.edit');
-Route::put('/chapter/{id}', [ChapterController::class, 'update'])->name('chapters.update');
-Route::delete('/chapter/{id}', [ChapterController::class, 'destroy'])->name('chapters.destroy');
-
-Route::get('/story/{story_id}/chapter/create', [ChapterController::class, 'create'])->name('chapters.create');
-
-
+Auth::routes(); // Đăng nhập/đăng ký cho người dùng

@@ -9,10 +9,5 @@ class Story extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'author', 'cover_image'];
-
-    public function chapters()
-    {
-        return $this->hasMany(Chapter::class);
-    }
+    protected $fillable = ['title', 'author', 'description', 'thumbnail', 'views'];
 }

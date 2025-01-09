@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Chapter extends Model
 {
-    protected $fillable = [
-        'story_id', 'chapter_number', 'title', 'content'
-    ];
+    use HasFactory;
+
+    protected $fillable = ['story_id', 'title', 'content', 'chapter_number'];
 
     public function story()
     {
