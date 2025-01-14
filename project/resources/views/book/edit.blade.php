@@ -3,9 +3,9 @@
         Edit Book
     </x-slot:heading>
     @if(session('success'))
-        <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50">
-            {{ session('success') }}
-        </div>
+        <script>
+            alert("{{ session('success') }}");
+        </script>
     @endif
 
     <p class="text-lg font-semibold text-gray-700">Edit the details of the book</p>
