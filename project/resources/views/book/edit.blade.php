@@ -1,4 +1,4 @@
-<x-layout>
+<x-admin-layout>
     <x-slot:heading>
         Edit Book
     </x-slot:heading>
@@ -130,4 +130,4 @@
             chapterItem.remove();
         }
     </script>
-</x-layout>
+</x-admin-layout>

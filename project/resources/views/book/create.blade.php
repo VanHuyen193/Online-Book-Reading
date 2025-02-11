@@ -1,4 +1,4 @@
-<x-layout>
+<x-admin-layout>
     <x-slot:heading>
         Create a New Book
     </x-slot:heading>
@@ -119,4 +119,4 @@
             chapterItem.remove();
         }
     </script>
-</x-layout>
+</x-admin-layout>

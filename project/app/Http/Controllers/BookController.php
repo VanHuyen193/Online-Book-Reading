@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Book;
 use App\Models\Chapter;
+use App\Models\SavedBook;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -15,9 +16,15 @@ class BookController extends Controller
     // }
 
     // Display a listing of the books
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::paginate(5);
+        $query = Book::query();
+
+        if ($request->has('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        $books = $query->paginate(5);
         return view('book.index', [
             'books' => $books->withPath('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books')
         ]);
@@ -62,7 +69,8 @@ class BookController extends Controller
 
         $book->chapters()->createMany($chapters->toArray());
 
-        return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books/create')->with('success', 'Book created successfully!');
+        return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books/create')
+        ->with('success', 'Book created successfully!');
     }
 
     // Show the form for editing the specified book
@@ -100,7 +108,7 @@ class BookController extends Controller
         $book->chapters()->createMany($chapters->toArray());
 
         return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books/' . $book->id)
-    ->with('success', 'Book updated successfully!');
+         ->with('success', 'Book updated successfully!');
 
     }
 
@@ -110,8 +118,94 @@ class BookController extends Controller
         $book->chapters()->delete();
         $book->delete();
 
-        return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books')->with('success', 'Book deleted successfully!');
+        return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/admin/books')
+        ->with('success', 'Book deleted successfully!');
     }
+
+    public function saveBook(Request $request, $bookId)
+    {
+        if (!auth()->check()) {
+            return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books/' . $bookId)
+                ->with('error', 'You need to log in to save books.');
+        }
+
+        $userId = auth()->id();
+
+        // Kiểm tra nếu sách đã được lưu trước đó
+        $existingSavedBook = SavedBook::where('user_id', $userId)
+            ->where('book_id', $bookId)
+            ->first();
+
+        if ($existingSavedBook) {
+            return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books/' . $bookId)
+                ->with('info', 'You have already saved this book.');
+        }
+
+        // Lưu sách vào danh sách đã lưu
+        SavedBook::create([
+            'user_id' => $userId,
+            'book_id' => $bookId,
+        ]);
+
+        return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books')
+            ->with('success', 'Book saved successfully!');
+    }
+
+
+
+    public function showSavedBook()
+    {
+        if (!auth()->check()) {
+            return view('user.savedbook', [
+                'message' => 'You need to log in to view saved books.',
+                'savedBooks' => collect() // Truyền một Collection rỗng để tránh lỗi
+            ]);
+        }
+
+        $userId = auth()->id();
+        $savedBooks = SavedBook::with('book')->where('user_id', $userId)->get();
+
+        if ($savedBooks->isEmpty()) {
+            return view('user.savedbook', [
+                'message' => 'You have not saved any books yet',
+                'savedBooks' => collect() // Truyền một Collection rỗng
+            ]);
+        }
+
+        return view('user.savedbook', ['savedBooks' => $savedBooks]);
+    }
+
+
+    public function deleteSavedBook(SavedBook $savedbook){
+        $savedbook->delete();
+        return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/savedbooks')
+        ->with('success', 'Book deleted successfully!');
+    }
+
+    // Xem chapter trước/sau
+    public function viewChapter ($bookId, $chapterId) {
+        $chapter = Chapter::findOrFail($chapterId);
+    
+        // Lấy chương trước (nếu có)
+        $previousChapter = Chapter::where('book_id', $bookId)
+            ->where('id', '<', $chapterId)
+            ->orderBy('id', 'desc')
+            ->first();
+    
+        // Lấy chương sau (nếu có)
+        $nextChapter = Chapter::where('book_id', $bookId)
+            ->where('id', '>', $chapterId)
+            ->orderBy('id', 'asc')
+            ->first();
+    
+        return view('Chapter', [
+            'chapter' => $chapter,
+            'previousChapter' => $previousChapter,
+            'nextChapter' => $nextChapter,
+            'bookId' => $bookId,
+        ]);
+    }
+
 }
 
 

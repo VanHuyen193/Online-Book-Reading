@@ -25,7 +25,7 @@ class SessionController extends Controller
 
         if (Auth::user()->is_admin) {
             // Chuyển hướng admin
-            return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books/create'); 
+            return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/admin'); 
             // dd(request()->all());
         }
 

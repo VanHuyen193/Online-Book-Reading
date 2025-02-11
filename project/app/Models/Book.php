@@ -19,4 +19,9 @@ class Book extends Model
     {
         return $this->hasMany(Chapter::class, 'book_id', 'id');
     }
+    
+    public function savedByUsers()
+    {
+        return $this->hasMany(SavedBook::class);
+    }
 }
