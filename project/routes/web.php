@@ -9,40 +9,45 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ChapterController;
+use App\Http\Controllers\SavedBookController;
+use App\Http\Controllers\AdminBookController;
 use App\Http\Middleware\EnsureUserIsAdmin;
 
-Route::get('/', function () {return view('Home');});
+// Public routes
+Route::view('/', 'Home');
+Route::view('/contact', 'Contact');
 
-Route::get('/contact', function(){return view('Contact');});
-
-// Route::get('/savedbooks', function(){return view('user.savedbook');});
-Route::post('/books/{book}/save', [BookController::class, 'saveBook']);
-Route::get('/savedbooks', [BookController::class, 'showSavedBook']);
-Route::delete('/savedbooks/{savedbook}', [BookController::class, 'deleteSavedBook'])->name('savedbooks.delete');
-
+// Book Routes
 Route::resource('books', BookController::class);
+Route::get('/books/{book}/chapters/{chapter}', [ChapterController::class, 'viewChapter'])->name('chapters.view');
 
-Route::get('/books/{bookId}/chapters/{chapterId}', [BookController::class, 'viewChapter']);
 
-// Auth
-Route::get('/register', [RegisteredUserController::class, 'create']);
-Route::post('/register', [RegisteredUserController::class, 'store']);
+// Saved Books
+Route::prefix('savedbooks')->group(function () {
+    Route::post('/{book}/save', [SavedBookController::class, 'saveBook'])->name('savedbooks.save');
+    Route::get('/', [SavedBookController::class, 'showSavedBook'])->name('savedbooks.index');
+    Route::delete('/{savedbook}', [SavedBookController::class, 'deleteSavedBook'])->name('savedbooks.delete');
+});
 
-Route::get('/login', [SessionController::class, 'create']);
-Route::post('/login', [SessionController::class, 'store']);
 
-Route::post('/logout', [SessionController::class, 'destroy']);
+// Authentication Routes
+Route::middleware('guest')->group(function () {
+    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+    Route::post('/register', [RegisteredUserController::class, 'store']);
+    Route::get('/login', [SessionController::class, 'create'])->name('login');
+    Route::post('/login', [SessionController::class, 'store']);
+});
+Route::post('/logout', [SessionController::class, 'destroy'])->middleware('auth')->name('logout');
 
+// Admin Routes
 Route::middleware(EnsureUserIsAdmin::class, 'auth')->group(function () {
     Route::get('/admin', function(){return view('admin.index');});
-    Route::get('/admin/books', function(){
-        $books = Book::paginate(5);
-        return view('admin.bookS', [
-            'books' => $books->withPath('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/admin/books')
-    ]);});
+    Route::get('/admin/books', [AdminBookController::class, 'index']);
     Route::get('/books/create', [BookController::class, 'create']);
 });
 
+// User Profile Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile/update', [ProfileController::class, 'update']);

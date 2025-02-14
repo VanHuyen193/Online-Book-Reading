@@ -59,7 +59,7 @@
         <p>No chapters available for this book.</p>
     @endif
 
-    <form action="/books/{{ $book->id }}/save" method="POST" class="mt-6">
+    <form action="/savedbooks/{{ $book->id }}/save" method="POST" class="mt-6">
         @csrf
         <button type="submit" class="rounded-md bg-indigo-600 px-4 py-2 text-white text-sm font-semibold shadow hover:bg-indigo-500">
             Save

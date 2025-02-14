@@ -1,33 +1,73 @@
 <?php
-
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Book;
-use App\Models\Chapter;
-use App\Models\SavedBook;
+
 use Illuminate\Http\Request;
+use App\Models\Chapter;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class API extends Controller
 {
-    public function showSavedBook()
+    public function viewChapter($bookId, $chapterId)
     {
-        // Lấy ID của người dùng hiện tại
-        $userId = auth()->id();
+        $chapter = Chapter::where('book_id', $bookId)
+                          ->where('id', $chapterId)
+                          ->first();
 
-        // Kiểm tra nếu người dùng chưa đăng nhập
-        if (!$userId) {
-            return response()->json(['message' => 'User not authenticated'], 401);
+        if (!$chapter) {
+            return response()->json(['message' => 'Chapter not found'], 404);
         }
 
-        // Lấy danh sách sách đã lưu
-        $savedBooks = SavedBook::with('book') // Include book details
-            ->where('user_id', $userId)
-            ->get();
+        $previousChapter = Chapter::where('book_id', $bookId)
+            ->where('id', '<', $chapterId)
+            ->orderBy('id', 'desc')
+            ->first();
 
-        // Trả về danh sách sách dưới dạng JSON
+        $nextChapter = Chapter::where('book_id', $bookId)
+            ->where('id', '>', $chapterId)
+            ->orderBy('id', 'asc')
+            ->first();
+
         return response()->json([
-            'message' => 'Saved books retrieved successfully',
-            'data' => $savedBooks,
+            'message' => 'Chapter retrieved successfully',
+            'data' => [
+                'chapter' => $chapter,
+                'previous_chapter' => $previousChapter,
+                'next_chapter' => $nextChapter,
+            ]
         ]);
+    }
+
+    public function users()
+    {
+        $users = User::all();
+        return response()->json([
+            'message' => 'Users retrieved successfully',
+            'data' => $users
+        ], 200);
+    }
+
+    public function addUser(Request $request)
+    {
+        // Validate dữ liệu đầu vào
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6',
+        ]);
+
+        // Tạo user mới
+        $user = User::create([
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']), 
+        ]);
+
+        return response()->json([
+            'message' => 'User created successfully!',
+            'data' => $user
+        ], 201);
     }
 }
