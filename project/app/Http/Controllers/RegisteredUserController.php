@@ -21,7 +21,7 @@ class RegisteredUserController extends Controller
         $user = User::create($attributes);
 
         Auth::login($user);
-        return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books');
+        return redirect(url('/books'));
         // dd(request()->all());
     }
 }

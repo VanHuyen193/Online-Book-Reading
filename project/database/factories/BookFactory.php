@@ -20,11 +20,5 @@ class BookFactory extends Factory
         ];
     }
 
-    // public function configure()
-    // {
-    //     return $this->afterCreating(function ($book) {  // Không cần khai báo kiểu dữ liệu ở đây
-    //         // Tạo các chapter cho book
-    //         $book->chapters()->createMany(Chapter::factory()->count(5)->make()->toArray());
-    //     });
-    // }
+    // Book::factory()->count(20)->hasChapters(5)->create();
 }

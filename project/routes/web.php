@@ -30,7 +30,6 @@ Route::prefix('savedbooks')->group(function () {
     Route::delete('/{savedbook}', [SavedBookController::class, 'deleteSavedBook'])->name('savedbooks.delete');
 });
 
-
 // Authentication Routes
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');

@@ -8,7 +8,7 @@
 
     <div class="mt-4 flex justify-between">
         @if($previousChapter)
-            <a href="{{ 'https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books/' . $bookId . '/chapters/' . $previousChapter->id }}" class="px-4 py-2 bg-gray-200 rounded">
+            <a href="{{ url('/books/' . $bookId . '/chapters/' . $previousChapter->id) }}" class="px-4 py-2 bg-gray-200 rounded">
                 ← Previous
             </a>
 
@@ -17,7 +17,7 @@
         @endif
 
         @if($nextChapter)
-            <a href="{{ 'https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books/' . $bookId . '/chapters/' . $nextChapter->id }}" class="px-4 py-2 bg-gray-200 rounded">
+            <a href="{{ url('/books/' . $bookId . '/chapters/' . $nextChapter->id) }}" class="px-4 py-2 bg-gray-200 rounded">
                 Next →
             </a>
         @else

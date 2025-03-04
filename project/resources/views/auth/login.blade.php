@@ -1,20 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <script src='https://cdn.tailwindcss.com'></script>
-</head>
-<body>
-    <!--
-      This example requires updating your template:
-
-      ```
-      <html class="h-full bg-white">
-      <body class="h-full">
-      ```
-    -->
+<x-layout>
+    <x-slot:heading>
+        
+    </x-slot:heading>
+    
     <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
       <div class="sm:mx-auto sm:w-full sm:max-w-sm">
         <img class="mx-auto h-10 w-auto" src="https://img.freepik.com/premium-vector/icon-person-reading-book_98396-95018.jpg" alt="Your Company">
@@ -22,6 +10,14 @@
       </div>
 
       <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      @if ($errors->any())
+          <div class="mb-4 p-3 text-sm text-red-600 bg-red-100 rounded-lg">
+              @foreach ($errors->all() as $error)
+                  <p>{{ $error }}</p>
+              @endforeach
+          </div>
+      @endif
+
         <form class="space-y-6" action="/login" method="POST">
         @csrf
           <div>
@@ -57,8 +53,4 @@
         </p> -->
       </div>
     </div>
-
-
-    
-</body>
-</html>
+</x-layout>

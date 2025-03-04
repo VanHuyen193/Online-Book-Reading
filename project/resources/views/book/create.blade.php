@@ -9,7 +9,7 @@
     @endif
 
     <p class="text-lg font-semibold text-gray-700">Add a new book to the library collection</p>
-    <form action="https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books" method="POST">
+    <form action="{{ url('/books') }}" method="POST">
     @csrf
         <div class="space-y-12">
             <!-- Book Information Section -->

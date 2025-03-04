@@ -9,8 +9,7 @@ class SavedBookController extends Controller
     public function saveBook(Request $request, $bookId)
     {
         if (!auth()->check()) {
-            return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books/' . $bookId)
-                ->with('error', 'You need to log in to save books.');
+            return redirect(url('/books/' . $bookId))->with('error', 'You need to log in to save books.');
         }
 
         $userId = auth()->id();
@@ -21,8 +20,7 @@ class SavedBookController extends Controller
             ->first();
 
         if ($existingSavedBook) {
-            return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books/' . $bookId)
-                ->with('info', 'You have already saved this book.');
+            return redirect(url('/books/' . $bookId))->with('info', 'You have already saved this book.');
         }
 
         // Lưu sách vào danh sách đã lưu
@@ -31,8 +29,7 @@ class SavedBookController extends Controller
             'book_id' => $bookId,
         ]);
 
-        return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books')
-            ->with('success', 'Book saved successfully!');
+        return redirect(url('/books'))->with('success', 'Book saved successfully!');
     }
 
     public function showSavedBook()
@@ -59,7 +56,6 @@ class SavedBookController extends Controller
 
     public function deleteSavedBook(SavedBook $savedbook){
         $savedbook->delete();
-        return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/savedbooks')
-        ->with('success', 'Book deleted successfully!');
+        return redirect(url('/savedbooks'))->with('success', 'Book deleted successfully!');
     }
 }

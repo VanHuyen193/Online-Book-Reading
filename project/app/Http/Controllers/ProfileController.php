@@ -16,25 +16,30 @@ class ProfileController extends Controller
 
     public function update(Request $request)
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'password' => 'nullable|min:8|confirmed',
-        ]);
+            $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'password' => 'nullable|min:6|confirmed',
+            ]);
 
-        $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name;
+            $user->first_name = $request->first_name;
+            $user->last_name = $request->last_name;
 
-        if ($request->password) {
-            $user->password = Hash::make($request->password);
+            if ($request->password) {
+                $user->password = Hash::make($request->password);
+            }
+
+            $user->save();
+
+            return redirect(url('/profile'))->with('success', 'Profile updated successfully!');
+        } catch (\Exception $e) {
+            return redirect(url('/profile'))->with('error', 'Something went wrong! Please try again.');
         }
-        $user->save();
-        return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/profile')
-         ->with('success', 'Profile updated successfully!');
-        // dd($request->all());
     }
+
 
     public function destroy()
     {
@@ -42,7 +47,7 @@ class ProfileController extends Controller
         Auth::logout();
         $user->delete();
 
-        return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/')->with('success', 'Deleted!');
+        return redirect(url('/'))->with('success', 'Deleted!');
     }
 }
 

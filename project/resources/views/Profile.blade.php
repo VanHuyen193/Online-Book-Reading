@@ -9,8 +9,15 @@
         </script>
     @endif
 
+    @if (session('error'))
+        <div class="mb-4 p-3 text-sm text-red-600 bg-red-100 rounded-lg">
+            {{ session('error') }}
+        </div>
+    @endif
+
+
     <p class="text-lg font-semibold text-gray-700">Update your profile information</p>
-    <form action="{{'https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/profile/update'}}" method="POST">
+    <form action="{{ url('/profile/update') }}" method="POST">
         @csrf
         @method('PUT')
         <div class="space-y-12">
@@ -77,7 +84,7 @@
     </form>
 
     <!-- Delete Account Form -->
-    <form action="{{ 'https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/profile/delete' }}" method="POST" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');" class="mt-4">
+    <form action="{{ url('/profile/delete') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');" class="mt-4">
         @csrf
         @method('DELETE')
         <button type="submit" class="rounded-md bg-red-600 px-4 py-2 text-white text-sm font-semibold shadow hover:bg-red-500">

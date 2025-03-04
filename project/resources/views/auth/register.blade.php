@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <script src='https://cdn.tailwindcss.com'></script>
-</head>
-<body>
+<x-layout>
+    <x-slot:heading>
+        
+    </x-slot:heading>
+    
     <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
             <img class="mx-auto h-10 w-auto" src="https://img.freepik.com/premium-vector/icon-person-reading-book_98396-95018.jpg" alt="Your Company">
@@ -61,5 +57,4 @@
             </p>
         </div>
     </div>
-</body>
-</html>
+</x-layout>

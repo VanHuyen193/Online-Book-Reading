@@ -9,7 +9,7 @@
     @endif
 
     <p class="text-lg font-semibold text-gray-700">Edit the details of the book</p>
-    <form action="{{ 'https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books/' . $book->id }}" method="POST">
+    <form action="{{ url('/books/' . $book->id) }}" method="POST">
         @csrf
         @method('PUT')
         <div class="space-y-12">
@@ -85,7 +85,7 @@
     </form>
 
     <!-- Form Xóa Sách -->
-    <form action="{{ 'https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books/' . $book->id }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this book? This action cannot be undone.');">
+    <form action="{{ url('/books/' . $book->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this book? This action cannot be undone.');">
         @csrf
         @method('DELETE')
         <button type="submit" class="rounded-md bg-red-600 px-4 py-2 text-white text-sm font-semibold shadow hover:bg-red-500">

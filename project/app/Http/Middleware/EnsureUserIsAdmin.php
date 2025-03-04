@@ -16,12 +16,10 @@ class EnsureUserIsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Kiểm tra nếu người dùng đã đăng nhập và là admin
         if (Auth::check() && Auth::user()->is_admin) {
             return $next($request);
         }
 
-        // Nếu không phải admin, chuyển hướng hoặc trả về lỗi
         abort(403, 'Unauthorized access.');
     }
 }

@@ -2,7 +2,6 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 
 class SessionController extends Controller
 {
@@ -10,30 +9,32 @@ class SessionController extends Controller
     {
         return view('auth.login');
     }
+
     public function store()
     {
         $attributes = request()->validate([
             'email' => ['required', 'email'],
             'password' => ['required']
         ]);
-        if (! Auth::attempt($attributes)) {
-            throw ValidationException::withMessages([
-                'email' => 'Sorry, those credentials do not match.'
-            ]);
+
+        if (!Auth::attempt($attributes)) {
+            return back()->withErrors([
+                'email' => 'Email or password is incorrect. Please try again.'
+            ])->withInput();
         }
+
         request()->session()->regenerate();
 
         if (Auth::user()->is_admin) {
-            // Chuyển hướng admin
-            return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/admin'); 
-            // dd(request()->all());
+            return redirect(url('/admin'));
         }
 
-        return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books');
+        return redirect(url('/books'));
     }
+
     public function destroy()
     {
         Auth::logout();
-        return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/');
+        return redirect(url('/'));
     }
 }

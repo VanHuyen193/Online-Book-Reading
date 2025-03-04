@@ -20,7 +20,7 @@ class BookController extends Controller
 
         $books = $query->paginate(5);
         return view('book.index', [
-            'books' => $books->withPath('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books')
+            'books' => $books->withPath(url('/books'))
         ]);
     }
 
@@ -63,8 +63,7 @@ class BookController extends Controller
 
         $book->chapters()->createMany($chapters->toArray());
 
-        return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books/create')
-        ->with('success', 'Book created successfully!');
+        return redirect(url('/books/create'))->with('success', 'Book created successfully!');
     }
 
     // Show the form for editing the specified book
@@ -101,9 +100,7 @@ class BookController extends Controller
         $book->chapters()->delete();
         $book->chapters()->createMany($chapters->toArray());
 
-        return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books/' . $book->id)
-         ->with('success', 'Book updated successfully!');
-
+        return redirect(route('books.edit', $book->id))->with('success', 'Book updated successfully!');
     }
 
     // Remove the specified book from storage
@@ -112,8 +109,7 @@ class BookController extends Controller
         $book->chapters()->delete();
         $book->delete();
 
-        return redirect('https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/admin/books')
-        ->with('success', 'Book deleted successfully!');
+        return redirect(url('/admin/books'))->with('success', 'Book deleted successfully!');
     }
 }
 

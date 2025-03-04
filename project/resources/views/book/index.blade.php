@@ -11,7 +11,7 @@
 
     <!-- Thanh tìm kiếm -->
     <!-- books?search=est -->
-    <form method="GET" action="{{ 'https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/books' }}" class="mb-4">
+    <form method="GET" action="{{ url('/books') }}" class="mb-4">
         <div class="flex items-center border rounded-md p-2 bg-white shadow-sm">
             <input type="text" name="search" placeholder="Search books..." value="{{ request('search') }}" 
                    class="flex-1 px-4 py-2 outline-none text-gray-700">
