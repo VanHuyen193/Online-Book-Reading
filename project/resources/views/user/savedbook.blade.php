@@ -16,7 +16,7 @@
                         <span class="text-lg font-semibold">{{ $savedBook->book->title }}</span>
                     </a>
                     <!-- Form Xóa Sách -->
-                    <form action="{{ 'https://laughing-space-bassoon-4x6gv6xgjrp2j9gq-8000.app.github.dev/savedbooks/' . $savedBook->id }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this book? This action cannot be undone.');">
+                    <form action="{{ url('savedbooks/' . $savedBook->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this book? This action cannot be undone.');">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="rounded-md bg-red-600 px-4 py-2 text-white text-sm font-semibold shadow hover:bg-red-500">
