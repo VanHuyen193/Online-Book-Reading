@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Chapter;
 use App\Models\Book;
 
 class ChapterController extends Controller
 {
     // Xem chapter trước/sau
-    public function viewChapter ($bookId, $chapterId) {
+    public function viewChapter($bookId, $chapterId)
+    {
         $chapter = Chapter::findOrFail($chapterId);
 
         // Lấy chương trước (nếu có)
@@ -78,42 +80,44 @@ class ChapterController extends Controller
         ]);
 
         $book = Book::findOrFail($validated['book_id']);
-
-        // ✅ FIX: Đảm bảo không so sánh với null
-        if (!empty($validated['insert_after'])) {
-            $afterChapter = Chapter::find($validated['insert_after']);
-
-            // ✅ FIX: Kiểm tra nếu $afterChapter tồn tại và order hợp lệ
-            if ($afterChapter && $afterChapter->order !== null) {
-                // ✅ FIX: Dời các chương có order >= vị trí mới
-                Chapter::where('book_id', $book->id)
-                    ->where('order', '>=', $afterChapter->order + 1)
-                    ->increment('order');
-
-                $order = $afterChapter->order + 1;
-            } else {
-                // ✅ FIX: Nếu order bị null thì fallback thêm cuối
-                $maxOrder = $book->chapters()->max('order');
-                $order = $maxOrder !== null ? $maxOrder + 1 : 1;
-            }
-        } else {
-            // ✅ FIX: Fallback nếu thêm cuối
-            $maxOrder = $book->chapters()->max('order');
-            $order = $maxOrder !== null ? $maxOrder + 1 : 1;
-        }
-
-        $book->chapters()->create([
+        $chapters = $book->chapters()->orderBy('order')->get();
+        $newChapters = [];
+        $newChapterData = [
             'title' => $validated['title'],
             'content' => $validated['content'],
-            'order' => $order,
-        ]);
+            'book_id' => $book->id,
+        ];
+
+        $inserted = false;
+
+        foreach ($chapters as $chapter) {
+            $newChapters[] = $chapter->toArray();
+            if (!$inserted && $validated['insert_after'] == $chapter->id) {
+                $newChapters[] = $newChapterData;
+                $inserted = true;
+            }
+        }
+
+        if (!$inserted) {
+            $newChapters[] = $newChapterData;
+        }
+
+        $book->chapters()->delete();
+        $book->chapters()->createMany($newChapters);
 
         return redirect()->route('books.edit', $book->id)->with('success', 'Chapter added successfully!');
     }
 
 
 
+    public function deleteChapter(Book $book, Chapter $chapter)
+    {
+        if ($chapter->book_id !== $book->id) {
+            abort(404);
+        }
+        $chapter->delete();
 
-
-
+        return redirect()->route('books.edit', $book->id)
+            ->with('success', 'Chapter deleted successfully!');
+    }
 }

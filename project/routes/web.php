@@ -27,6 +27,7 @@ Route::post('/chapters', [ChapterController::class, 'store'])->name('chapters.st
 Route::get('/chapters/create', [ChapterController::class, 'create'])->name('chapters.create');
 Route::get('/books/{book}/chapters/{chapter}/edit', [ChapterController::class, 'edit'])->name('chapters.edit');
 Route::put('/books/{book}/chapters/{chapter}', [ChapterController::class, 'update'])->name('chapters.update');
+Route::delete('/books/{book}/chapters/{chapter}', [ChapterController::class, 'deleteChapter'])->name('chapters.delete');
 
 // routes/web.php
 
