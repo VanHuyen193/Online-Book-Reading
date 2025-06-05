@@ -11,6 +11,7 @@ class Chapter extends Model
 
     protected $table = 'chapters';
     protected $fillable = ['title', 'content', 'book_id'];
+    
 
     /**
      * Get the book that owns the chapter.
@@ -19,4 +20,7 @@ class Chapter extends Model
     {
         return $this->belongsTo(Book::class, 'book_id', 'id');
     }
+    
+    
+
 }

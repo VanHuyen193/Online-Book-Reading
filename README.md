@@ -28,7 +28,7 @@ The system uses a relational database to store books, users, and saved book entr
 - Chapters Table: Stores individual book chapters
 - Users Table: Stores user authentication and profile information
 - Saved Books Table: Maintains user-saved books with relationships to users and books
-![database](https://github.com/user-attachments/assets/f0840834-68eb-4778-a266-e92931aa6ccf)
+![database](https://github.com/user-attachmenaats/assets/f0840834-68eb-4778-a266-e92931aa6ccf)
 ## Use Case Diagram
 The diagram below represents the actions of a user after logging into their account.
 ![usecase](https://github.com/user-attachments/assets/9fbb3aeb-a244-437a-84d2-f19aa4eb3673)

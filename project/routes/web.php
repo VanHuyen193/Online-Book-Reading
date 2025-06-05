@@ -22,6 +22,15 @@ Route::view('/contact', 'Contact');
 Route::resource('books', BookController::class);
 Route::get('/books/{book}/chapters/{chapter}', [ChapterController::class, 'viewChapter'])->name('chapters.view');
 
+// Chapter Routes
+Route::post('/chapters', [ChapterController::class, 'store'])->name('chapters.store');
+Route::get('/chapters/create', [ChapterController::class, 'create'])->name('chapters.create');
+Route::get('/books/{book}/chapters/{chapter}/edit', [ChapterController::class, 'edit'])->name('chapters.edit');
+Route::put('/books/{book}/chapters/{chapter}', [ChapterController::class, 'update'])->name('chapters.update');
+
+// routes/web.php
+
+
 
 // Saved Books
 Route::prefix('savedbooks')->group(function () {
@@ -44,6 +53,8 @@ Route::middleware(EnsureUserIsAdmin::class, 'auth')->group(function () {
     Route::get('/admin', function(){return view('admin.index');});
     Route::get('/admin/books', [AdminBookController::class, 'index']);
     Route::get('/books/create', [BookController::class, 'create']);
+    // Route::get('/books/{book}/edit', [BookController::class, 'edit'])->name('books.edit'); // Bảo vệ luôn trang edit
+    // Route::put('/books/{book}', [BookController::class, 'update']); // Bảo vệ cả update
 });
 
 // User Profile Routes
