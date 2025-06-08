@@ -1,14 +1,19 @@
 <x-layout>
     <x-slot:heading>
-        Chapter
+        <a href="{{ url('/books/' . $bookId) }}">
+            {{ $bookTitle }}
+        </a>
     </x-slot:heading>
-    
+
     <h2 class="font-bold text-lg">{{ $chapter->title }}</h2>
-    <p>{{ $chapter->content }}</p>
+    <div class="whitespace-pre-line text-gray-800 text-base leading-relaxed">
+        {{ $chapter->content }}
+    </div>
 
     <div class="mt-4 flex justify-between">
         @if($previousChapter)
-            <a href="{{ url('/books/' . $bookId . '/chapters/' . $previousChapter->id) }}" class="px-4 py-2 bg-gray-200 rounded">
+            <a href="{{ url('/books/' . $bookId . '/chapters/' . $previousChapter->id) }}"
+                class="px-4 py-2 bg-gray-200 rounded">
                 ← Previous
             </a>
 
@@ -17,7 +22,8 @@
         @endif
 
         @if($nextChapter)
-            <a href="{{ url('/books/' . $bookId . '/chapters/' . $nextChapter->id) }}" class="px-4 py-2 bg-gray-200 rounded">
+            <a href="{{ url('/books/' . $bookId . '/chapters/' . $nextChapter->id) }}"
+                class="px-4 py-2 bg-gray-200 rounded">
                 Next →
             </a>
         @else

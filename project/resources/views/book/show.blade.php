@@ -1,6 +1,6 @@
 <x-layout>
     <x-slot:heading>
-        Book
+        {{ $book->title }}
     </x-slot:heading>
     @if (session('info'))
         <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded mb-4 relative">

@@ -25,12 +25,15 @@ class ChapterController extends Controller
             ->where('id', '>', $chapterId)
             ->orderBy('id', 'asc')
             ->first();
+        
+        $bookTitle = Book::findOrFail($bookId)->title;
 
         return view('Chapter', [
             'chapter' => $chapter,
             'previousChapter' => $previousChapter,
             'nextChapter' => $nextChapter,
             'bookId' => $bookId,
+            'bookTitle' => $bookTitle,
         ]);
     }
 
@@ -80,7 +83,7 @@ class ChapterController extends Controller
         ]);
 
         $book = Book::findOrFail($validated['book_id']);
-        $chapters = $book->chapters()->orderBy('order')->get();
+        $chapters = $book->chapters()->orderBy('id')->get();
         $newChapters = [];
         $newChapterData = [
             'title' => $validated['title'],

@@ -2,6 +2,7 @@
     <x-slot:heading>
         Edit Book
     </x-slot:heading>
+
     @if(session('success'))
         <script>
             alert("{{ session('success') }}");
@@ -9,7 +10,9 @@
     @endif
 
     <p class="text-lg font-semibold text-gray-700">Edit the details of the book</p>
-    <form action="{{ url('/books/' . $book->id) }}" method="POST">
+
+    <!-- FORM CẬP NHẬT -->
+    <form id="book-form" action="{{ route('books.update', $book->id) }}" method="POST">
         @csrf
         @method('PUT')
         <div class="space-y-12">
@@ -44,88 +47,89 @@
             <div class="border-b border-gray-900/10 pb-12">
                 <h2 class="text-base/7 font-semibold text-gray-900">Chapters</h2>
                 <p class="mt-1 text-sm/6 text-gray-600">Click a chapter title to edit its content.</p>
-
-                <ul class="mt-6 space-y-4">
-                    @foreach($chapters as $chapter)
-                        <li class="flex justify-between items-center p-4 border rounded-md bg-gray-50 hover:bg-gray-100">
-                            <a href="{{ url('/books/' . $book->id . '/chapters/' . $chapter->id . '/edit') }}"
-                                class="text-indigo-600 hover:underline font-medium">
-                                {{ $chapter->title }}
-                            </a>
-                            <div class="flex items-center space-x-2">
-                                <!-- Nút thêm chương sau -->
-                                <button type="button" onclick="insertChapter({{ $book->id }}, {{ $chapter->id }})"
-                                    class="text-green-600 hover:text-green-800 text-xl font-bold"
-                                    title="Insert chapter after this">
-                                    [+]
-                                </button>
-
-
-
-                                <!-- Nút xóa chương -->
-                                <form action="{{ route('chapters.delete', [$book->id, $chapter->id]) }}" method="POST"
-                                    onsubmit="return confirm('Are you sure you want to delete this chapter?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-green-800 text-xl font-bold"
-                                        title="Delete chapter">
-                                        [-]
-                                    </button>
-                                </form>
-                            </div>
-                        </li>
-                    @endforeach
-                </ul>
-
+                <x-chapter-list :chapters="$chapters" :book="$book" />
             </div>
 
-            <!-- Submit, Delete, and Cancel Buttons on the same row -->
-            <div class="mt-6 flex justify-between items-center">
-                <!-- Delete Form (bên trái) -->
-                <form action="{{ url('/books/' . $book->id) }}" method="POST"
-                    onsubmit="return confirm('Are you sure you want to delete this book? This action cannot be undone.');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                        class="rounded-md bg-red-600 px-4 py-2 text-white text-sm font-semibold shadow hover:bg-red-500">
-                        Delete Book
-                    </button>
-                </form>
-
-                <!-- Right Side: Save + Cancel Buttons -->
-                <div class="flex gap-x-4">
-                    <a href="{{ url('/admin/books') }}"
-                        class="rounded-md bg-gray-500 px-4 py-2 text-white text-sm font-semibold shadow hover:bg-gray-400">
-                        Cancel
-                    </a>
-                    <button type="submit" form="book-form"
-                        class="rounded-md bg-indigo-600 px-4 py-2 text-white text-sm font-semibold shadow hover:bg-indigo-500">
-                        Save Changes
-                    </button>
-                </div>
+            <!-- Right Side: Save + Cancel Buttons -->
+            <div class="flex justify-end gap-x-4">
+                <a href="{{ url('/admin/books') }}"
+                    class="rounded-md bg-gray-500 px-4 py-2 text-white text-sm font-semibold shadow hover:bg-gray-400">
+                    Cancel
+                </a>
+                <button type="submit"
+                    class="rounded-md bg-indigo-600 px-4 py-2 text-white text-sm font-semibold shadow hover:bg-indigo-500">
+                    Save Changes
+                </button>
             </div>
+        </div>
+    </form>
 
-            <script>
-                function insertChapter(bookId, insertAfterId) {
-                    const form = document.createElement('form');
-                    form.method = 'GET'; 
-                    form.action = '/chapters/create';
+    <!-- FORM XÓA - TÁCH RIÊNG RA -->
+    <form action="{{ route('books.destroy', $book->id) }}" method="POST" class="mt-6"
+        onsubmit="return confirm('Are you sure you want to delete this book? This action cannot be undone.');">
+        @csrf
+        @method('DELETE')
+        <button type="submit"
+            class="rounded-md bg-red-600 px-4 py-2 text-white text-sm font-semibold shadow hover:bg-red-500">
+            Delete Book
+        </button>
+    </form>
 
-                    const bookInput = document.createElement('input');
-                    bookInput.type = 'hidden';
-                    bookInput.name = 'book_id';
-                    bookInput.value = bookId;
 
-                    const afterInput = document.createElement('input');
-                    afterInput.type = 'hidden';
-                    afterInput.name = 'insert_after';
-                    afterInput.value = insertAfterId;
 
-                    form.appendChild(bookInput);
-                    form.appendChild(afterInput);
-                    document.body.appendChild(form);
-                    form.submit();
+        <script>
+            function insertChapter(bookId, insertAfterId) {
+                const form = document.createElement('form');
+                form.method = 'GET';
+                form.action = '/chapters/create';
+
+                const bookInput = document.createElement('input');
+                bookInput.type = 'hidden';
+                bookInput.name = 'book_id';
+                bookInput.value = bookId;
+
+                const afterInput = document.createElement('input');
+                afterInput.type = 'hidden';
+                afterInput.name = 'insert_after';
+                afterInput.value = insertAfterId;
+
+                form.appendChild(bookInput);
+                form.appendChild(afterInput);
+                document.body.appendChild(form);
+                form.submit();
+            }
+
+            function deleteChapter(bookId, chapterId) {
+                if (!confirm('Are you sure you want to delete this chapter?')) return;
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/books/${bookId}/chapters/${chapterId}`;
+
+                // Lấy CSRF token từ thẻ meta trong <head>
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+                if (!csrfToken) {
+                    alert("CSRF token not found. Make sure it's in your <head>.");
+                    return;
                 }
-            </script>
 
+                // CSRF token
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '_token';
+                tokenInput.value = csrfToken;
+                form.appendChild(tokenInput);
+
+                // Spoof HTTP DELETE method
+                const methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'DELETE';
+                form.appendChild(methodInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        </script>
+    </form>
 </x-admin-layout>

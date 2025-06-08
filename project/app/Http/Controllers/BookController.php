@@ -79,26 +79,13 @@ class BookController extends Controller
         $validated = request()->validate([
             'book-title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            // 'chapter-title' => ['array', 'required'],
-            // 'chapter-title.*' => ['required', 'string', 'max:255'],
-            // 'chapter-content' => ['array', 'required'],
-            // 'chapter-content.*' => ['required', 'string'],
+
         ]);
 
         $book->update([
             'title' => $validated['book-title'],
             'content' => $validated['description'],
         ]);
-
-        // $chapters = collect($validated['chapter-title'])->map(function ($title, $index) use ($validated) {
-        //     return [
-        //         'title' => $title,
-        //         'content' => $validated['chapter-content'][$index],
-        //     ];
-        // });
-
-        // $book->chapters()->delete();
-        // $book->chapters()->createMany($chapters->toArray());
 
         return redirect(route('books.edit', $book->id))->with('success', 'Book updated successfully!');
     }
